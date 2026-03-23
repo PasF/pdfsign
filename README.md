@@ -10,7 +10,7 @@ Application portable (Windows & macOS) pour signer des documents PDF : positionn
 - Ajouter une ou plusieurs zones de texte, les déplacer et les éditer (double-clic)
 - Navigation multi-pages
 - Zoom avec Ctrl + molette
-- Export en un clic : génère `document_signed.pdf`
+- Export en un clic
 
 ## Prérequis
 
@@ -20,7 +20,7 @@ Application portable (Windows & macOS) pour signer des documents PDF : positionn
 
 ```bash
 # Cloner le projet
-git clone <url-du-repo>
+git clone https://github.com/PasF/pdfsign.git
 cd pdfsign
 
 # Créer un environnement virtuel (recommandé)
@@ -54,7 +54,7 @@ python main.py chemin/vers/document.pdf
 2. **Importer une signature** — cliquer sur "Import Signature", sélectionner un PNG/JPG. La signature apparaît sur la page : déplacez-la et redimensionnez-la.
 3. **Ajouter du texte** — cliquer sur "Add Text". Double-cliquer sur la zone pour éditer le texte, puis la déplacer.
 4. **Naviguer** — utiliser les boutons "Prev" / "Next" pour changer de page. Les éléments sont conservés par page.
-5. **Exporter** — cliquer sur le bouton **Done** en bas à droite. Le fichier `document_signed.pdf` est généré dans le même répertoire que le PDF source.
+5. **Exporter** — cliquer sur le bouton **Done** en bas à droite. Le fichier `*_signed.pdf` est généré dans le même répertoire que le PDF source.
 
 ### Raccourcis
 
