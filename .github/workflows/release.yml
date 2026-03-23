@@ -1,0 +1,109 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Build macOS app
+        run: pyinstaller --name PDFSign --windowed --onedir main.py
+
+      - name: Create zip
+        run: cd dist && zip -r ../PDFSign-macOS.zip PDFSign.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: PDFSign-macOS.zip
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
+
+      - name: Build Windows exe
+        run: pyinstaller --name PDFSign --windowed --onedir --icon NONE main.py
+
+      - name: Create Inno Setup script
+        shell: pwsh
+        run: |
+          @"
+          [Setup]
+          AppName=PDFSign
+          AppVersion=${{ github.ref_name }}
+          DefaultDirName={autopf}\PDFSign
+          DefaultGroupName=PDFSign
+          OutputDir=.
+          OutputBaseFilename=PDFSign-Windows-Setup
+          Compression=lzma
+          SolidCompression=yes
+          ArchitecturesAllowed=x64compatible
+          ArchitecturesInstallIn64BitMode=x64compatible
+
+          [Files]
+          Source: "dist\PDFSign\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+
+          [Icons]
+          Name: "{group}\PDFSign"; Filename: "{app}\PDFSign.exe"
+          Name: "{commondesktop}\PDFSign"; Filename: "{app}\PDFSign.exe"; Tasks: desktopicon
+
+          [Tasks]
+          Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional icons:"
+
+          [Run]
+          Filename: "{app}\PDFSign.exe"; Description: "Launch PDFSign"; Flags: nowait postinstall skipifsilent
+          "@ | Out-File -FilePath installer.iss -Encoding ASCII
+
+      - name: Build installer
+        run: iscc installer.iss
+
+      - name: Create portable zip
+        shell: pwsh
+        run: Compress-Archive -Path dist\PDFSign\* -DestinationPath PDFSign-Windows-Portable.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: |
+            PDFSign-Windows-Setup.exe
+            PDFSign-Windows-Portable.zip
+
+  release:
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            PDFSign-macOS.zip
+            PDFSign-Windows-Setup.exe
+            PDFSign-Windows-Portable.zip
