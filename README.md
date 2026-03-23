@@ -1,70 +1,70 @@
 # PDFSign
 
-Application portable (Windows & macOS) pour signer des documents PDF : positionnez une signature PNG et des zones de texte directement sur le document, puis exportez le résultat.
+Portable application (Windows & macOS) for signing PDF documents: overlay a PNG signature and text boxes directly on the document, then export the result.
 
-## Fonctionnalités
+## Features
 
-- Ouvrir un PDF via l'interface graphique ou en ligne de commande
-- Importer une image de signature (PNG/JPG) et la positionner par glisser-déposer
-- Redimensionner la signature via les poignées aux coins
-- Ajouter une ou plusieurs zones de texte, les déplacer et les éditer (double-clic)
-- Navigation multi-pages
-- Zoom avec Ctrl + molette
-- Export en un clic
+- Open a PDF via the GUI or command line
+- Import a signature image (PNG/JPG) and position it with drag-and-drop
+- Resize the signature using corner handles
+- Add one or more text boxes, move and edit them (double-click)
+- Multi-page navigation
+- Zoom with Ctrl + scroll wheel
+- One-click export
 
-## Prérequis
+## Prerequisites
 
 - Python 3.10+
 
 ## Installation
 
 ```bash
-# Cloner le projet
+# Clone the project
 git clone https://github.com/PasF/pdfsign.git
 cd pdfsign
 
-# Créer un environnement virtuel (recommandé)
+# Create a virtual environment (recommended)
 python -m venv venv
 source venv/bin/activate    # macOS / Linux
 venv\Scripts\activate       # Windows
 
-# Installer les dépendances
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-## Utilisation
+## Usage
 
-### Lancement via l'interface graphique
+### Launch the GUI
 
 ```bash
 python main.py
 ```
 
-Puis cliquer sur **Open PDF** dans la barre d'outils.
+Then click **Open PDF** in the toolbar.
 
-### Lancement avec un fichier PDF
+### Open a PDF directly
 
 ```bash
-python main.py chemin/vers/document.pdf
+python main.py path/to/document.pdf
 ```
 
 ### Workflow
 
-1. **Ouvrir un PDF** — via le bouton ou en ligne de commande
-2. **Importer une signature** — cliquer sur "Import Signature", sélectionner un PNG/JPG. La signature apparaît sur la page : déplacez-la et redimensionnez-la.
-3. **Ajouter du texte** — cliquer sur "Add Text". Double-cliquer sur la zone pour éditer le texte, puis la déplacer.
-4. **Naviguer** — utiliser les boutons "Prev" / "Next" pour changer de page. Les éléments sont conservés par page.
-5. **Exporter** — cliquer sur le bouton **Done** en bas à droite. Le fichier `*_signed.pdf` est généré dans le même répertoire que le PDF source.
+1. **Open a PDF** — via the button or command line
+2. **Import a signature** — click "Import Signature", select a PNG/JPG. The signature appears on the page: drag and resize it.
+3. **Add text** — click "Add Text". Double-click the text box to edit, then drag it into position.
+4. **Navigate** — use the "Prev" / "Next" buttons to change pages. Elements are preserved per page.
+5. **Export** — click the **Done** button in the bottom-right corner. The file `*_signed.pdf` is generated in the same directory as the source PDF.
 
-### Raccourcis
+### Shortcuts
 
-| Action          | Raccourci           |
-|-----------------|---------------------|
-| Zoom avant/arrière | Ctrl + molette   |
-| Éditer un texte | Double-clic         |
-| Déplacer un élément | Cliquer-glisser |
+| Action             | Shortcut          |
+|--------------------|-------------------|
+| Zoom in/out        | Ctrl + scroll     |
+| Edit text          | Double-click      |
+| Move an element    | Click and drag    |
 
-## Créer un exécutable portable
+## Build a portable executable
 
 ```bash
 pip install pyinstaller
@@ -76,30 +76,30 @@ pyinstaller --name pdfsign --windowed --onedir main.py
 pyinstaller --name pdfsign --windowed --onedir main.py
 ```
 
-L'exécutable se trouve dans `dist/pdfsign/`. Distribuez ce dossier tel quel — aucune installation n'est requise.
+The executable is located in `dist/pdfsign/`. Distribute this folder as-is — no installation required.
 
-> **Note macOS** : au premier lancement, faites clic droit > Ouvrir pour contourner Gatekeeper.
+> **macOS note**: on first launch, right-click > Open to bypass Gatekeeper.
 
-## Structure du projet
+## Project structure
 
 ```
 pdfsign/
-  main.py                  # Point d'entrée
+  main.py                  # Entry point
   app/
-    main_window.py          # Fenêtre principale
-    pdf_view.py             # Canvas interactif (QGraphicsView)
-    pdf_document.py         # Chargement et export PDF (PyMuPDF)
+    main_window.py          # Main window
+    pdf_view.py             # Interactive canvas (QGraphicsView)
+    pdf_document.py         # PDF loading and export (PyMuPDF)
     items/
-      signature_item.py     # Élément signature draggable
-      text_item.py          # Élément texte draggable/éditable
+      signature_item.py     # Draggable signature element
+      text_item.py          # Draggable/editable text element
     utils/
-      coordinates.py        # Conversion coordonnées scène ↔ PDF
+      coordinates.py        # Scene-to-PDF coordinate conversion
   requirements.txt
   README.md
 ```
 
 ## Technologies
 
-- [PySide6](https://doc.qt.io/qtforpython-6/) — Interface graphique cross-platform (LGPL)
-- [PyMuPDF](https://pymupdf.readthedocs.io/) — Rendu et manipulation PDF
-- [PyInstaller](https://pyinstaller.org/) — Packaging en exécutable portable
+- [PySide6](https://doc.qt.io/qtforpython-6/) — Cross-platform GUI (LGPL)
+- [PyMuPDF](https://pymupdf.readthedocs.io/) — PDF rendering and manipulation
+- [PyInstaller](https://pyinstaller.org/) — Portable executable packaging
